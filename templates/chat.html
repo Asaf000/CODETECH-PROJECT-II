@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Real-Time Chat Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-comments"></i> Chat Rooms</h2>
+                <button id="createRoomBtn" class="btn-icon" title="Create Room">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">
+                    {{ session.display_name[0].upper() }}
+                </div>
+                <div class="user-details">
+                    <strong>{{ session.display_name }}</strong>
+                    <span class="user-status online">
+                        <i class="fas fa-circle"></i> Online
+                    </span>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn-logout" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+
+            <div class="rooms-list" id="roomsList">
+                <div class="loading-rooms">
+                    <i class="fas fa-spinner fa-spin"></i> Loading rooms...
+                </div>
+            </div>
+
+            <div class="online-users-section">
+                <h3><i class="fas fa-users"></i> Online Users</h3>
+                <div id="onlineUsersList" class="online-users-list">
+                    <div class="loading-users">Loading...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <div class="chat-header">
+                <div class="room-info">
+                    <h2 id="currentRoomName">Select a room to start chatting</h2>
+                    <span id="roomMemberCount" class="room-members"></span>
+                </div>
+                <div class="chat-actions">
+                    <button id="toggleSidebar" class="btn-icon mobile-only">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="no-room-selected">
+                    <i class="fas fa-comments"></i>
+                    <h3>Welcome to Real-Time Chat!</h3>
+                    <p>Select a room from the sidebar to start chatting</p>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span id="typingText"></span>
+            </div>
+
+            <div class="message-input-container" id="messageInputContainer" style="display: none;">
+                <form id="messageForm" class="message-form">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="Type a message..." 
+                        autocomplete="off"
+                        maxlength="1000"
+                    >
+                    <button type="submit" class="btn-send" title="Send Message">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div id="createRoomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Create New Room</h3>
+                <button class="modal-close" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="createRoomForm">
+                <div class="form-group">
+                    <label for="newRoomName">Room Name</label>
+                    <input 
+                        type="text" 
+                        id="newRoomName" 
+                        placeholder="Enter room name"
+                        required
+                        maxlength="50"
+                    >
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelCreateRoom">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Socket.IO and App Script -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
